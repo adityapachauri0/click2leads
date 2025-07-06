@@ -1,0 +1,91 @@
+/* Mobile Responsive Styles for 3D Components */
+
+/* Hide complex 3D elements on mobile for performance */
+@media (max-width: 768px) {
+  /* Reduce particles on mobile */
+  .particle-container > div:nth-child(n+10) {
+    display: none;
+  }
+  
+  /* Simplify 3D scenes */
+  canvas {
+    max-height: 400px !important;
+  }
+  
+  /* Hide navigation orb on mobile */
+  .navigation-orb {
+    display: none;
+  }
+  
+  /* Adjust text sizes */
+  .text-hero {
+    font-size: 3rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Stack grid layouts */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Adjust spacing */
+  .py-20 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  /* Simplify glass morphism on mobile */
+  .glass-morphism {
+    backdrop-filter: blur(10px) !important;
+  }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover\:scale-105:hover {
+    transform: none !important;
+  }
+  
+  /* Increase tap targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Disable custom cursor on touch */
+  .custom-cursor {
+    display: none !important;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .min-h-screen {
+    min-height: 100vh !important;
+  }
+  
+  .h-screen {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  /* Disable animations on mobile for better performance */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Reduce shadow complexity */
+  .shadow-2xl {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  }
+}

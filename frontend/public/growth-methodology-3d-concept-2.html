@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Growth Methodology Concepts</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0A0A0A;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .concept {
+            margin-bottom: 60px;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 10px;
+        }
+        .concept h2 {
+            color: #0EA5E9;
+            margin-bottom: 20px;
+        }
+        img, .design-frame {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .design-frame {
+            height: 600px;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 3D CSS Design */
+        .cube-container {
+            display: flex;
+            gap: 80px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+        
+        .step-cube {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 10s infinite linear;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotateX(-20deg) rotateY(0deg); }
+            100% { transform: rotateX(-20deg) rotateY(360deg); }
+        }
+        
+        .cube-face {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .front { transform: translateZ(75px); }
+        .back { transform: rotateY(180deg) translateZ(75px); }
+        .right { transform: rotateY(90deg) translateZ(75px); }
+        .left { transform: rotateY(-90deg) translateZ(75px); }
+        .top { transform: rotateX(90deg) translateZ(75px); }
+        .bottom { transform: rotateX(-90deg) translateZ(75px); }
+        
+        .cube-1 .cube-face { background: linear-gradient(135deg, #0EA5E9, #0875A7); }
+        .cube-2 .cube-face { background: linear-gradient(135deg, #A855F7, #7C3AE3); }
+        .cube-3 .cube-face { background: linear-gradient(135deg, #10B981, #059669); }
+        .cube-4 .cube-face { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        
+        .step-label {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 200px;
+        }
+        
+        /* Isometric Grid Design */
+        .iso-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .iso-step {
+            position: absolute;
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, #1a1a2e, #2a2a3e);
+            transform: rotateX(60deg) rotateZ(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .iso-step:hover {
+            transform: rotateX(60deg) rotateZ(45deg) translateY(-20px);
+            box-shadow: 0 40px 60px rgba(0,0,0,0.7);
+        }
+        
+        .iso-1 { top: 100px; left: 200px; background: linear-gradient(135deg, #0EA5E9, #0875A7); }
+        .iso-2 { top: 200px; left: 400px; background: linear-gradient(135deg, #A855F7, #7C3AE3); }
+        .iso-3 { top: 300px; left: 600px; background: linear-gradient(135deg, #10B981, #059669); }
+        .iso-4 { top: 400px; left: 800px; background: linear-gradient(135deg, #F59E0B, #D97706); }
+        
+        .description {
+            color: #999;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>3D Growth Methodology Design Concepts</h1>
+        
+        <div class="concept">
+            <h2>Concept 1: 3D Cubes with Perspective</h2>
+            <img src="/growth-methodology-3d-concept.svg" alt="3D Cubes Design">
+            <p class="description">
+                This design features 3D cubes with proper perspective, shadows, and gradient effects. 
+                Each step is represented as a cube with top, side, and shadow faces. The cubes are 
+                connected with flowing arrows, and there's a subtle grid floor for depth perception.
+            </p>
+        </div>
+        
+        <div class="concept">
+            <h2>Concept 2: Animated 3D CSS Cubes</h2>
+            <div class="design-frame">
+                <div class="cube-container">
+                    <div class="step-cube cube-1">
+                        <div class="cube-face front">1</div>
+                        <div class="cube-face back">1</div>
+                        <div class="cube-face right">1</div>
+                        <div class="cube-face left">1</div>
+                        <div class="cube-face top">1</div>
+                        <div class="cube-face bottom">1</div>
+                        <div class="step-label">
+                            <strong>ANALYZE</strong><br>
+                            <small>Deep Analysis</small>
+                        </div>
+                    </div>
+                    
+                    <div class="step-cube cube-2">
+                        <div class="cube-face front">2</div>
+                        <div class="cube-face back">2</div>
+                        <div class="cube-face right">2</div>
+                        <div class="cube-face left">2</div>
+                        <div class="cube-face top">2</div>
+                        <div class="cube-face bottom">2</div>
+                        <div class="step-label">
+                            <strong>STRATEGIZE</strong><br>
+                            <small>Quick Wins</small>
+                        </div>
+                    </div>
+                    
+                    <div class="step-cube cube-3">
+                        <div class="cube-face front">3</div>
+                        <div class="cube-face back">3</div>
+                        <div class="cube-face right">3</div>
+                        <div class="cube-face left">3</div>
+                        <div class="cube-face top">3</div>
+                        <div class="cube-face bottom">3</div>
+                        <div class="step-label">
+                            <strong>IMPLEMENT</strong><br>
+                            <small>Execute</small>
+                        </div>
+                    </div>
+                    
+                    <div class="step-cube cube-4">
+                        <div class="cube-face front">4</div>
+                        <div class="cube-face back">4</div>
+                        <div class="cube-face right">4</div>
+                        <div class="cube-face left">4</div>
+                        <div class="cube-face top">4</div>
+                        <div class="cube-face bottom">4</div>
+                        <div class="step-label">
+                            <strong>OPTIMIZE</strong><br>
+                            <small>Grow</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="description">
+                Fully animated 3D cubes that rotate continuously. Each cube has all six faces with 
+                gradient backgrounds matching your brand colors. This would be implemented with CSS 
+                3D transforms and animations on the actual website.
+            </p>
+        </div>
+        
+        <div class="concept">
+            <h2>Concept 3: Isometric Steps</h2>
+            <div class="design-frame">
+                <div class="iso-container">
+                    <div class="iso-step iso-1">Step 1</div>
+                    <div class="iso-step iso-2">Step 2</div>
+                    <div class="iso-step iso-3">Step 3</div>
+                    <div class="iso-step iso-4">Step 4</div>
+                </div>
+            </div>
+            <p class="description">
+                An isometric staircase design where each step represents a phase in the methodology. 
+                The steps appear to climb upward, symbolizing growth and progress. Hover effects 
+                lift each step to add interactivity.
+            </p>
+        </div>
+        
+        <div class="concept">
+            <h2>Additional Design Elements</h2>
+            <p class="description">
+                All concepts can include:
+                <ul>
+                    <li>Floating particles for added depth</li>
+                    <li>Glowing effects on hover</li>
+                    <li>Smooth transitions between steps</li>
+                    <li>Interactive tooltips with detailed information</li>
+                    <li>WebGL shader backgrounds for advanced effects</li>
+                    <li>Parallax scrolling for depth perception</li>
+                </ul>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
