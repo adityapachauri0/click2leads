@@ -6,8 +6,8 @@ import CustomCursor from '@/components/CustomCursor'
 import NoiseOverlay from '@/components/NoiseOverlay'
 import NavigationOrb from '@/components/NavigationOrb'
 import Header from '@/components/Header'
-import DebugInfo from '@/components/DebugInfo'
 import GlobalParticles from '@/components/GlobalParticles'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -32,21 +32,22 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body className="font-sans antialiased">
-        <a 
-          href="#main-content" 
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-electric-blue text-white px-4 py-2 rounded-lg z-50"
-        >
-          Skip to main content
-        </a>
-        <GlobalParticles />
-        <NoiseOverlay />
-        <CustomCursor />
-        <Header />
-        <NavigationOrb />
-        <DebugInfo />
-        <main id="main-content" className="relative z-10 pt-16">
-          {children}
-        </main>
+        <ErrorBoundary>
+          <a 
+            href="#main-content" 
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-electric-blue text-white px-4 py-2 rounded-lg z-50"
+          >
+            Skip to main content
+          </a>
+          <GlobalParticles />
+          <NoiseOverlay />
+          <CustomCursor />
+          <Header />
+          <NavigationOrb />
+          <main id="main-content" className="relative z-10 pt-16">
+            {children}
+          </main>
+        </ErrorBoundary>
       </body>
     </html>
   )

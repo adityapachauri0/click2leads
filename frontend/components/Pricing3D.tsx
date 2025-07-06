@@ -113,8 +113,8 @@ function PricingCalculator3D() {
             fontSize={0.15}
             color="white"
             anchorX="center"
-            opacity={0.7}
           >
+            <meshBasicMaterial attach="material" color="white" opacity={0.7} transparent />
             {model === 'revenue-share' ? '/month (estimated)' : 'total cost'}
           </Text>
         </Float>
@@ -270,8 +270,8 @@ function Hero3D() {
                   position={[x, y, z]}
                   fontSize={0.5}
                   color="#0EA5E9"
-                  opacity={0.3}
                 >
+                  <meshBasicMaterial attach="material" color="#0EA5E9" opacity={0.3} transparent />
                   {['👤', '📧', '💼', '🎯', '📊'][i % 5]}
                 </Text>
               </Float>

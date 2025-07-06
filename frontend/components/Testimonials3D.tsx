@@ -96,8 +96,8 @@ function TestimonialCard3D({ testimonial, index, total, active }: any) {
           position={[0, -1.3, 0.1]}
           fontSize={0.1}
           color="white"
-          opacity={0.7}
         >
+          <meshBasicMaterial attach="material" color="white" opacity={0.7} transparent />
           {testimonial.company}
         </Text>
         
@@ -201,12 +201,10 @@ function Platforms3D() {
                   <bufferGeometry>
                     <bufferAttribute
                       attach="attributes-position"
-                      count={2}
-                      array={new Float32Array([
+                      args={[new Float32Array([
                         0, 0, 0,
                         Math.cos(angle) * 3, Math.sin(angle) * 2, 0
-                      ])}
-                      itemSize={3}
+                      ]), 3]}
                     />
                   </bufferGeometry>
                   <lineBasicMaterial color="#0EA5E9" opacity={0.3} transparent />

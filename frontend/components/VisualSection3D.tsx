@@ -112,7 +112,7 @@ function Scene() {
   const [showExplosion, setShowExplosion] = useState(false)
 
   const generateLeads = () => {
-    const newParticles = []
+    const newParticles: Array<{ id: number; position: [number, number, number]; delay: number }> = []
     for (let i = 0; i < 50; i++) {
       newParticles.push({
         id: Date.now() + i,

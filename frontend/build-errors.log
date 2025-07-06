@@ -1,0 +1,30 @@
+
+> tech-startup@1.0.0 build
+> next build
+
+   ▲ Next.js 15.3.5
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 0ms
+   Linting and checking validity of types ...
+Failed to compile.
+
+./components/VisualSection3D.tsx:115:11
+Type error: Variable 'newParticles' implicitly has type 'any[]' in some locations where its type cannot be determined.
+
+[0m [90m 113 |[39m[0m
+[0m [90m 114 |[39m   [36mconst[39m generateLeads [33m=[39m () [33m=>[39m {[0m
+[0m[31m[1m>[22m[39m[90m 115 |[39m     [36mconst[39m newParticles [33m=[39m [][0m
+[0m [90m     |[39m           [31m[1m^[22m[39m[0m
+[0m [90m 116 |[39m     [36mfor[39m ([36mlet[39m i [33m=[39m [35m0[39m[33m;[39m i [33m<[39m [35m50[39m[33m;[39m i[33m++[39m) {[0m
+[0m [90m 117 |[39m       newParticles[33m.[39mpush({[0m
+[0m [90m 118 |[39m         id[33m:[39m [33mDate[39m[33m.[39mnow() [33m+[39m i[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /Users/adityapachauri/Desktop/click2leads/frontend
+npm error workspace tech-startup@1.0.0
+npm error location /Users/adityapachauri/Desktop/click2leads/frontend
+npm error command failed
+npm error command sh -c next build
