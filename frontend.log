@@ -1,0 +1,27 @@
+
+> click2lead@1.0.0 dev:frontend
+> cd frontend && npm run dev
+
+
+> tech-startup@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.3.5
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.6:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1083ms
+ ○ Compiling / ...
+ ✓ Compiled / in 3.6s (2725 modules)
+ HEAD / 200 in 4075ms
+ ✓ Compiled in 518ms (1299 modules)
+ GET / 200 in 172ms
+ ✓ Compiled in 342ms (2694 modules)
+ GET / 200 in 39ms
+ ✓ Compiled /_not-found in 139ms (2684 modules)
+ GET /_next/static/css/app/layout.css?v=1751839019634 404 in 260ms
+ ✓ Compiled in 233ms (2698 modules)
+ GET / 200 in 30ms
+ GET /_next/static/css/app/layout.css?v=1751839052303 404 in 68ms

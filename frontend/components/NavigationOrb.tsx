@@ -58,7 +58,7 @@ export default function NavigationOrb() {
       height: 60,
       borderRadius: '50%',
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 300,
         damping: 20,
       },
@@ -68,7 +68,7 @@ export default function NavigationOrb() {
       height: 400,
       borderRadius: '24px',
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 300,
         damping: 25,
       },

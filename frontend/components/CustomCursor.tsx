@@ -84,7 +84,7 @@ export default function CustomCursor() {
   }
 
   const spring = {
-    type: 'spring',
+    type: 'spring' as const,
     stiffness: 500,
     damping: 28,
   }

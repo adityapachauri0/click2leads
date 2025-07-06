@@ -1,0 +1,29 @@
+name: Deploy to Hostinger VPS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        password: ${{ secrets.VPS_PASSWORD }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          cd /var/www/click2leads
+          git pull origin main
+          npm install
+          cd frontend && npm install && npm run build
+          cd ../backend && npm install
+          pm2 restart all
+          echo "Deployment completed!"
