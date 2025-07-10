@@ -1,0 +1,15 @@
+
+> click2lead-backend@1.0.0 start
+> node server.js
+
+
+🚀 Click2leads API Server
+📍 Running on port 5001
+🌍 Environment: development
+🔗 Health check: http://localhost:5001/api/health
+  
+Database initialized
+Default admin user created (username: admin, password: admin123)
+⚠️  Please change the default password immediately!
+SIGTERM received. Shutting down gracefully...
+Server closed

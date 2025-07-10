@@ -1,11 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
+const { initDatabase, getContent, updateContent, getAdminUser, updateAdminPassword } = require('./database');
+const { authenticate, generateToken } = require('./middleware/auth');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Initialize database
+initDatabase().then(() => {
+  console.log('Database initialized');
+}).catch(err => {
+  console.error('Database initialization error:', err);
+});
 
 // CORS configuration for production
 const corsOptions = {
@@ -45,9 +55,142 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
-      contact: '/api/contact'
+      contact: '/api/contact',
+      auth: {
+        login: '/api/admin/login',
+        changePassword: '/api/admin/change-password'
+      },
+      content: {
+        get: '/api/content/:section?',
+        update: '/api/content'
+      }
     }
   }); 
+});
+
+// Admin Authentication Endpoints
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+    
+    const user = await getAdminUser(username);
+    
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    const token = generateToken(user);
+    
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        username: user.username
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// Change password endpoint
+app.post('/api/admin/change-password', authenticate, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const username = req.user.username;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Current and new passwords are required' });
+    }
+    
+    const user = await getAdminUser(username);
+    
+    if (!bcrypt.compareSync(currentPassword, user.password)) {
+      return res.status(401).json({ error: 'Current password is incorrect' });
+    }
+    
+    await updateAdminPassword(username, newPassword);
+    
+    res.json({
+      success: true,
+      message: 'Password updated successfully'
+    });
+  } catch (error) {
+    console.error('Password change error:', error);
+    res.status(500).json({ error: 'Failed to update password' });
+  }
+});
+
+// Content Management Endpoints
+app.get('/api/content/:section?', async (req, res) => {
+  try {
+    const { section } = req.params;
+    const content = await getContent(section);
+    
+    // Transform content array into organized object
+    const organizedContent = {};
+    content.forEach(item => {
+      if (!organizedContent[item.section]) {
+        organizedContent[item.section] = {};
+      }
+      organizedContent[item.section][item.key] = item.value;
+    });
+    
+    res.json({
+      success: true,
+      content: section ? organizedContent[section] : organizedContent
+    });
+  } catch (error) {
+    console.error('Get content error:', error);
+    res.status(500).json({ error: 'Failed to fetch content' });
+  }
+});
+
+// Update content (protected)
+app.post('/api/content', authenticate, async (req, res) => {
+  try {
+    const { updates } = req.body;
+    
+    if (!updates || !Array.isArray(updates)) {
+      return res.status(400).json({ error: 'Updates array is required' });
+    }
+    
+    const results = [];
+    
+    for (const update of updates) {
+      const { section, key, value } = update;
+      
+      if (!section || !key || value === undefined) {
+        results.push({ 
+          section, 
+          key, 
+          error: 'Missing required fields' 
+        });
+        continue;
+      }
+      
+      try {
+        await updateContent(section, key, value);
+        results.push({ section, key, success: true });
+      } catch (err) {
+        results.push({ section, key, error: err.message });
+      }
+    }
+    
+    res.json({
+      success: true,
+      results
+    });
+  } catch (error) {
+    console.error('Update content error:', error);
+    res.status(500).json({ error: 'Failed to update content' });
+  }
 });
 
 // Contact form endpoint (placeholder)

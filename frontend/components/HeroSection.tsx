@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView, useAnimation } from 'framer-motion'
 import ShaderBackground from './ShaderBackground'
+import { getContent, ContentData } from '@/lib/content'
 
 const TypewriterText = ({ text }: { text: string }) => {
   const [displayedText, setDisplayedText] = useState('')
@@ -51,6 +52,23 @@ export default function HeroSection() {
   const controls = useAnimation()
   const magnetRef = useRef<HTMLAnchorElement>(null)
   const [magnetPos, setMagnetPos] = useState({ x: 0, y: 0 })
+  const [content, setContent] = useState<ContentData['hero']>({
+    title: 'A Lead Generation Powerhouse',
+    subtitle: 'Partner for Life',
+    stats_spending: '£28 million',
+    stats_leads: '4.7 million leads',
+    cta_primary: 'Talk to a Specialist',
+    cta_secondary: 'Explore Our Work'
+  })
+
+  useEffect(() => {
+    // Fetch dynamic content
+    getContent('hero').then(data => {
+      if (data.hero) {
+        setContent(data.hero)
+      }
+    })
+  }, [])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!magnetRef.current) return
@@ -76,10 +94,10 @@ export default function HeroSection() {
           className="space-y-8"
         >
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-hero font-display font-bold leading-tight">
-            <TypewriterText text="A Lead Generation Powerhouse" />
+            <TypewriterText text={content?.title || 'A Lead Generation Powerhouse'} />
             <br />
             <span className="gradient-text">
-              <TypewriterText text="Partner for Life" />
+              <TypewriterText text={content?.subtitle || 'Partner for Life'} />
             </span>
           </h1>
 
@@ -89,7 +107,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 2 }}
             className="text-base sm:text-xl md:text-2xl text-white/70 max-w-3xl mx-auto glass-morphism px-4 sm:px-6 py-4 rounded-2xl"
           >
-            We&apos;ve spent over <span className="text-electric-blue font-bold">£28 million</span> and created <span className="text-neon-purple font-bold">4.7 million leads</span> using key digital advertising platforms, SEO and more.
+            We&apos;ve spent over <span className="text-electric-blue font-bold">{content?.stats_spending || '£28 million'}</span> and created <span className="text-neon-purple font-bold">{content?.stats_leads || '4.7 million leads'}</span> using key digital advertising platforms, SEO and more.
           </motion.p>
 
           <motion.div
@@ -134,7 +152,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.5 }}
               />
               
-              <span className="relative z-10">Talk to a Specialist</span>
+              <span className="relative z-10">{content?.cta_primary || 'Talk to a Specialist'}</span>
               
               <motion.div
                 className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-20"
@@ -158,7 +176,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Explore Our Work →
+              {content?.cta_secondary || 'Explore Our Work'} →
             </motion.a>
           </motion.div>
         </motion.div>
