@@ -1,0 +1,46 @@
+[Unit]
+Description=Click2Leads Backend Service
+Documentation=https://click2leads.co.uk
+After=network.target mongodb.service redis.service
+Wants=mongodb.service redis.service
+
+[Service]
+Type=forking
+User=deploy
+Group=deploy
+WorkingDirectory=/var/www/click2leads
+
+# Environment variables
+Environment="NODE_ENV=production"
+Environment="PORT=5003"
+EnvironmentFile=/var/www/click2leads/backend/.env.production
+
+# PM2 specific settings
+ExecStart=/usr/bin/pm2 start /var/www/click2leads/ecosystem.config.js --env production
+ExecReload=/usr/bin/pm2 reload click2leads-backend
+ExecStop=/usr/bin/pm2 stop click2leads-backend
+
+# Process management
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=click2leads
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/click2leads /var/log/click2leads /var/backups/click2leads
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Timeout settings
+TimeoutStartSec=90
+TimeoutStopSec=90
+
+[Install]
+WantedBy=multi-user.target

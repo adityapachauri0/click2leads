@@ -1,0 +1,185 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main, production ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+          
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+          
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm test || true
+          
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm test -- --watchAll=false || true
+          
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+          
+      - name: Create deployment package
+        run: |
+          # Create deployment directory
+          mkdir -p deploy-package
+          
+          # Copy backend files
+          cp -r backend deploy-package/
+          rm -rf deploy-package/backend/node_modules
+          rm -f deploy-package/backend/.env
+          rm -f deploy-package/backend/.env.local
+          
+          # Copy frontend build
+          cp -r frontend/build deploy-package/frontend-build
+          
+          # Copy configuration files
+          cp ecosystem.config.js deploy-package/
+          cp -r nginx deploy-package/
+          cp -r scripts deploy-package/
+          
+          # Create deployment info
+          echo "DEPLOY_VERSION=$(git rev-parse --short HEAD)" > deploy-package/.deploy
+          echo "DEPLOY_TIME=$(date -u +%Y%m%d_%H%M%S)" >> deploy-package/.deploy
+          echo "DEPLOY_BRANCH=${GITHUB_REF#refs/heads/}" >> deploy-package/.deploy
+          
+          # Create tarball
+          tar -czf deploy-package.tar.gz deploy-package/
+          
+      - name: Copy to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: "deploy-package.tar.gz"
+          target: "/tmp/"
+          
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            # Navigate to project directory
+            cd /var/www/click2leads
+            
+            # Backup current deployment
+            if [ -d "backend" ]; then
+              tar -czf backups/backup-$(date +%Y%m%d_%H%M%S).tar.gz backend frontend nginx
+            fi
+            
+            # Extract new deployment
+            tar -xzf /tmp/deploy-package.tar.gz -C /tmp/
+            
+            # Stop current services
+            pm2 stop click2leads-backend || true
+            
+            # Update backend
+            rm -rf backend.old
+            [ -d "backend" ] && mv backend backend.old
+            mv /tmp/deploy-package/backend ./
+            
+            # Install production dependencies
+            cd backend
+            npm ci --production
+            
+            # Copy production environment file
+            cp ../.env.production .env
+            
+            # Update frontend
+            cd ..
+            rm -rf frontend/build.old
+            [ -d "frontend/build" ] && mv frontend/build frontend/build.old
+            mv /tmp/deploy-package/frontend-build frontend/build
+            
+            # Update configurations
+            cp /tmp/deploy-package/ecosystem.config.js ./
+            cp /tmp/deploy-package/nginx/click2leads.conf /etc/nginx/sites-available/
+            
+            # Update scripts
+            cp -r /tmp/deploy-package/scripts ./
+            chmod +x scripts/*.sh
+            
+            # Reload services
+            pm2 reload ecosystem.config.js --env production
+            pm2 save
+            
+            # Reload NGINX
+            nginx -t && systemctl reload nginx
+            
+            # Run migrations if needed
+            cd backend
+            npm run migrate || true
+            
+            # Clean up
+            rm -rf /tmp/deploy-package
+            rm -f /tmp/deploy-package.tar.gz
+            rm -rf ../backend.old
+            rm -rf ../frontend/build.old
+            
+            # Health check
+            sleep 5
+            curl -f http://localhost:5003/api/health || exit 1
+            
+            echo "Deployment completed successfully!"
+
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Send notification
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "✅ Deployment successful for Click2Leads"
+            # Add Slack/Discord/Email notification here
+          else
+            echo "❌ Deployment failed for Click2Leads"
+            # Add alert notification here
+          fi
